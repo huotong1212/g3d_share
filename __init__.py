@@ -92,13 +92,15 @@ def register():
         auth = reload_mod("auth")
         appdir = reload_mod("appdir")
         panels = reload_mod("panels")
+        ai_model = reload_mod("ai_model")
 
     else:
         from . import (
             async_loop,
             model,
             auth,
-            panels
+            panels,
+            ai_model,
         )
 
     async_loop.setup_asyncio_executor()
@@ -106,6 +108,7 @@ def register():
     model.register()
     auth.register()
     panels.register()
+    ai_model.register()
 
 
 
@@ -132,13 +135,15 @@ def unregister():
         async_loop,
         model,
         auth,
-        panels
+        panels,
+        ai_model,
     )
 
     async_loop.unregister()
     model.unregister()
     auth.unregister()
     panels.unregister()
+    ai_model.unregister()
 
     # import pip
     # pip.main(['uninstall', 'oss2'])

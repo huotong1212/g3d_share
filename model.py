@@ -48,9 +48,9 @@ async def set_batch_record_status(record_status: int, model_ids: List[int]):
         return res.json()["data"]
 
 
-class UploadModel(async_loop.AsyncModalOperatorMixin, bpy.types.Operator):
+class OPR_OT_upload_model(async_loop.AsyncModalOperatorMixin, bpy.types.Operator):
     # 该操作类的唯一ID，供其他类进行调用
-    bl_idname = 'objects.upload_model'
+    bl_idname = 'glacier.upload_model'
     # 在operator操作中显示的名字
     bl_label = "上传本地的模型到G3D云资源中"
     bl_description = "上传本地的模型到G3D云资源中"
@@ -139,8 +139,8 @@ class UploadModel(async_loop.AsyncModalOperatorMixin, bpy.types.Operator):
         return {'FINISHED'}
 
 
-class GetModelUploadList(async_loop.AsyncModalOperatorMixin, bpy.types.Operator):
-    bl_idname = 'objects.model_upload_list'
+class OPR_OT_model_uploaded_list(async_loop.AsyncModalOperatorMixin, bpy.types.Operator):
+    bl_idname = 'glacier.model_upload_list'
     bl_label = "获取这个用户已经上传的模型列表"
     bl_description = "获取这个用户已经上传的模型列表"
     bl_options = {'REGISTER', 'UNDO'}
@@ -160,8 +160,8 @@ class GetModelUploadList(async_loop.AsyncModalOperatorMixin, bpy.types.Operator)
             return res.json()["data"]
 
 
-class RenameModel(async_loop.AsyncModalOperatorMixin, bpy.types.Operator):
-    bl_idname = 'objects.rename_model'
+class OPR_OT_rename_model(async_loop.AsyncModalOperatorMixin, bpy.types.Operator):
+    bl_idname = 'glacier.rename_model'
     bl_label = "对模型重命名"
     bl_description = "对模型重命名"
     bl_options = {'REGISTER', 'UNDO'}
@@ -179,8 +179,8 @@ class RenameModel(async_loop.AsyncModalOperatorMixin, bpy.types.Operator):
         return res.json()["data"]
 
 
-class RecycleModel(async_loop.AsyncModalOperatorMixin, bpy.types.Operator):
-    bl_idname = 'objects.recycle_model_batch'
+class OPR_OT_recycle_model(async_loop.AsyncModalOperatorMixin, bpy.types.Operator):
+    bl_idname = 'glacier.recycle_model'
     bl_label = "将模型放入回收站"
     bl_description = "逻辑删除模型"
     bl_options = {'REGISTER', 'UNDO'}
@@ -191,8 +191,8 @@ class RecycleModel(async_loop.AsyncModalOperatorMixin, bpy.types.Operator):
         await set_record_status(routers.STATUS_DELETED, model_id)
 
 
-class RecycleModelBatch(async_loop.AsyncModalOperatorMixin, bpy.types.Operator):
-    bl_idname = 'objects.recycle_model_batch'
+class OPR_OT_recycle_model_batch(async_loop.AsyncModalOperatorMixin, bpy.types.Operator):
+    bl_idname = 'glacier.recycle_model_batch'
     bl_label = "将模型批量放入回收站"
     bl_description = "逻辑批量删除模型"
     bl_options = {'REGISTER', 'UNDO'}
@@ -205,8 +205,8 @@ class RecycleModelBatch(async_loop.AsyncModalOperatorMixin, bpy.types.Operator):
         await set_batch_record_status(routers.STATUS_DELETED, [1, 2, 3])
 
 
-class RecoveryModel(async_loop.AsyncModalOperatorMixin, bpy.types.Operator):
-    bl_idname = 'objects.recovery_model'
+class OPR_OT_recovery_model(async_loop.AsyncModalOperatorMixin, bpy.types.Operator):
+    bl_idname = 'glacier.recovery_model'
     bl_label = "从回收站中还原模型"
     bl_description = "设置模型状态为正常"
     bl_options = {'REGISTER', 'UNDO'}
@@ -217,8 +217,8 @@ class RecoveryModel(async_loop.AsyncModalOperatorMixin, bpy.types.Operator):
         await set_record_status(routers.STATUS_DELETED, model_id)
 
 
-class RecoveryModelBatch(async_loop.AsyncModalOperatorMixin, bpy.types.Operator):
-    bl_idname = 'objects.recovery_model_batch'
+class OPR_OT_recovery_model_batch(async_loop.AsyncModalOperatorMixin, bpy.types.Operator):
+    bl_idname = 'glacier.recovery_model_batch'
     bl_label = "将模型批量从回收站还原"
     bl_description = "批量更改模型状态"
     bl_options = {'REGISTER', 'UNDO'}
@@ -231,8 +231,8 @@ class RecoveryModelBatch(async_loop.AsyncModalOperatorMixin, bpy.types.Operator)
         await set_batch_record_status(routers.STATUS_DELETED, [1, 2, 3])
 
 
-class GetModelRecycledList(async_loop.AsyncModalOperatorMixin, bpy.types.Operator):
-    bl_idname = 'objects.model_upload_list'
+class OPR_OT_recycle_model_list(async_loop.AsyncModalOperatorMixin, bpy.types.Operator):
+    bl_idname = 'glacier.model_recycle_list'
     bl_label = "获取回收站内的模型列表"
     bl_description = "获取回收站内的模型列表"
     bl_options = {'REGISTER', 'UNDO'}
@@ -253,8 +253,8 @@ class GetModelRecycledList(async_loop.AsyncModalOperatorMixin, bpy.types.Operato
             return res.json()["data"]
 
 
-class DeleteModel(async_loop.AsyncModalOperatorMixin, bpy.types.Operator):
-    bl_idname = 'objects.delete_model'
+class OPR_OT_delete_model(async_loop.AsyncModalOperatorMixin, bpy.types.Operator):
+    bl_idname = 'glacier.delete_model'
     bl_label = "删除回收站内的模型"
     bl_description = "删除回收站内的模型"
     bl_options = {'REGISTER', 'UNDO'}
@@ -272,8 +272,8 @@ class DeleteModel(async_loop.AsyncModalOperatorMixin, bpy.types.Operator):
             return "delete successfully"
 
 
-class DeleteBatchModel(async_loop.AsyncModalOperatorMixin, bpy.types.Operator):
-    bl_idname = 'objects.delete_model'
+class OPR_OT_delete_batch_model(async_loop.AsyncModalOperatorMixin, bpy.types.Operator):
+    bl_idname = 'glacier.delete_model'
     bl_label = "批量删除回收站内的模型"
     bl_description = "批量删除回收站内的模型"
     bl_options = {'REGISTER', 'UNDO'}
@@ -287,8 +287,8 @@ class DeleteBatchModel(async_loop.AsyncModalOperatorMixin, bpy.types.Operator):
 
 
 def register():
-    bpy.utils.register_class(UploadModel)
+    bpy.utils.register_class(OPR_OT_upload_model)
 
 
 def unregister():
-    bpy.utils.unregister_class(UploadModel)
+    bpy.utils.unregister_class(OPR_OT_upload_model)

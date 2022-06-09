@@ -17,9 +17,9 @@ from .errors import STSGetFailedError
 from .utils import get_user_cache_dir
 
 
-class AuthToken(async_loop.AsyncModalOperatorMixin, bpy.types.Operator):
+class OPR_OT_authtoken(async_loop.AsyncModalOperatorMixin, bpy.types.Operator):
     # 该操作类的唯一ID，供其他类进行调用
-    bl_idname = 'objects.auth_token'
+    bl_idname = 'glacier.auth_token'
     # 在operator操作中显示的名字
     bl_label = "获取用户Token"
     bl_description = "获取用户Token"
@@ -83,9 +83,9 @@ def check_sts_token() -> dict:
             return ret
 
 
-class AliSTS(async_loop.AsyncModalOperatorMixin, bpy.types.Operator):
+class OPR_OT_alists(async_loop.AsyncModalOperatorMixin, bpy.types.Operator):
     # 该操作类的唯一ID，供其他类进行调用
-    bl_idname = 'objects.sts_token'
+    bl_idname = 'glacier.sts_token'
     # 在operator操作中显示的名字
     bl_label = "获取阿里云OSS临时STS"
     bl_description = "获取阿里云OSS临时STS"
@@ -135,8 +135,8 @@ async def async_func_call(async_func, *args, **kwargs):
 
 
 def register():
-    bpy.utils.register_class(AliSTS)
+    bpy.utils.register_class(OPR_OT_alists)
 
 
 def unregister():
-    bpy.utils.unregister_class(AliSTS)
+    bpy.utils.unregister_class(OPR_OT_alists)

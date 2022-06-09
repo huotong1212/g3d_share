@@ -1,8 +1,9 @@
 import os
 import sys
-
+import bpy
 import oss2
 
+from . import utils
 
 class AliObject():
     def __init__(self, access_key_id, access_key_secret, security_token, context):
@@ -33,6 +34,7 @@ class AliObject():
                 print('\r{0}% '.format(rate), end='')
                 sys.stdout.flush()
                 self.context.scene.progress = rate
+                utils.refresh_all_areas()
 
         # 如果使用store指定了目录，则断点信息将保存在指定目录中。如果使用num_threads设置并发上传线程数，请将oss2.defaults.connection_pool_size设置为大于或等于并发上传线程数。默认并发上传线程数为1。
         result = oss2.resumable_upload(self.bucket, oss_path, file_path,
