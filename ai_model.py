@@ -5,6 +5,7 @@ import aiohttp
 import bpy
 
 from . import async_loop
+from . import settings
 from . import utils
 
 categories = {
@@ -22,6 +23,16 @@ categories = {
     ("04401088", "电话", "Telephone"),
     ("04530566", "船只", "Watercraft"),
 }
+
+multi_categories = {
+    ("02691156", "飞机", "Airplane"),
+    ("02958343", "汽车", "Car"),
+    ("03001627", "椅子", "Chair"),
+    ("03211117", "显示器", "Display"),
+    ("03636649", "台灯", "Lamp"),
+    ("04379243", "桌子", "Table"),
+}
+
 
 
 class OPR_OT_ai_model_generate_single(async_loop.AsyncModalOperatorMixin, bpy.types.Operator):
@@ -45,58 +56,71 @@ class OPR_OT_ai_model_generate_single(async_loop.AsyncModalOperatorMixin, bpy.ty
                 return await response.text(), response.status
 
     async def async_execute(self, context):
-        self.report(
-            {'INFO'},
-            "模型生成中..."
-        )
+        print("start ....")
         start_time = time.time()
         picture_path = context.scene.picture
+
         if not picture_path:
             utils.show_message_box("请先选择图片", "Ai model message", "INFO")
-
             self.report(
                 {'ERROR'},
                 "please upload a picture first"
             )
             return {'CANCELLED'}
-        url = f"http://192.168.1.26:80/api/generate/sketch/{context.scene.category}"
-        print("url:", url)
-        print("picture_path", picture_path)
+
+        self.report(
+            {'INFO'},
+            "模型生成中..."
+        )
+        url = f"{settings.AI_MODEL_SERVER}{context.scene.category}"
         filepath = context.scene.picture
         files = {'file': open(filepath, 'rb')}
         # await asyncio.sleep(10)
-        print("Requesting")
         # TODO use aiohttp
         # res = requests.post(url, files=files)
+        # context.scene.aimodel_single_progress = 25
+        # utils.refresh_all_areas()
         res, status = await self.request(url, files)
-        print("Requesting over", status)
-        print(res)
+        # context.scene.aimodel_single_progress = 50
+        # utils.refresh_all_areas()
         if status != 200:
             self.report(
                 {'ERROR'},
                 "ai server error"
             )
-            # return {'CANCELLED'}
+            return {'CANCELLED'}
         else:
+            self.report(
+                {'INFO'},
+                "模型生成成功，正在保存模型..."
+            )
             # write response into an obj file
             user_data_dir = utils.get_user_data_dir()
             name, suffix = os.path.splitext(os.path.basename(picture_path))
-            print("name", name)
-            obj_path = os.path.join(user_data_dir, "%.obj" % str(name))
-
+            obj_path = os.path.join(user_data_dir, "%s.obj" % str(name))
             with open(obj_path, mode='w') as f:
                 f.write(res)
 
-        old_objs = set(bpy.data.objects)
-        max_x = max([(ob.location.x + ob.scale.x) for ob in old_objs])
-        bpy.ops.import_scene.obj(filepath="D:\\glacierProjects\\blender_demos\\objs\\tem.obj")
-        imported_objs = set(bpy.data.objects) - old_objs
+            # old_objs = set(bpy.data.objects)
+            # max_x = max([(ob.location.x + ob.scale.x) for ob in old_objs])
+            print("obj_path:", obj_path)
+            # context.scene.aimodel_single_progress = 75
+            # utils.refresh_all_areas()
+            self.report(
+                {'INFO'},
+                "导入模型..."
+            )
+            bpy.ops.import_scene.obj(filepath=obj_path)
+            # context.scene.aimodel_single_progress = 100
+            # utils.refresh_all_areas()
+            # bpy.ops.import_scene.obj(filepath="D:\\glacierProjects\\blender_demos\\objs\\tem.obj")
+        # imported_objs = set(bpy.data.objects) - old_objs
 
-        x_step = 1
-        for ob in imported_objs:
-            ob_x_scale = ob.scale.x
-            max_x = max_x + x_step + ob_x_scale
-            ob.location.x = max_x
+        # x_step = 1
+        # for ob in imported_objs:
+        #     ob_x_scale = ob.scale.x
+        #     max_x = max_x + x_step + ob_x_scale
+        #     ob.location.x = max_x
 
         end_time = time.time()
         utils.show_message_box("模型生成成功", "Ai model message", "INFO")
@@ -139,18 +163,13 @@ class OPR_OT_ai_model_generate_multi(async_loop.AsyncModalOperatorMixin, bpy.typ
                 "please upload a picture first"
             )
             return {'CANCELLED'}
-        url = f"http://192.168.1.26:80/api/generate/sketch/{context.scene.category}"
-        print("url:", url)
-        print("picture_path", picture_path)
+        url = f"http://192.168.1.26:80/api/generate/sketch/{context.scene.multi_p_category}"
         filepath = context.scene.picture
         files = {'file': open(filepath, 'rb')}
         # await asyncio.sleep(10)
-        print("Requesting")
         # TODO use aiohttp
         # res = requests.post(url, files=files)
         res, status = await self.request(url, files)
-        print("Requesting over", status)
-        print(res)
         if status != 200:
             self.report(
                 {'ERROR'},
@@ -167,16 +186,16 @@ class OPR_OT_ai_model_generate_multi(async_loop.AsyncModalOperatorMixin, bpy.typ
             with open(obj_path, mode='w') as f:
                 f.write(res)
 
-        old_objs = set(bpy.data.objects)
-        max_x = max([(ob.location.x + ob.scale.x) for ob in old_objs])
-        bpy.ops.import_scene.obj(filepath="D:\\glacierProjects\\blender_demos\\objs\\tem.obj")
-        imported_objs = set(bpy.data.objects) - old_objs
+            # old_objs = set(bpy.data.objects)
+            # max_x = max([(ob.location.x + ob.scale.x) for ob in old_objs])
+            bpy.ops.import_scene.obj(filepath=obj_path)
+        # imported_objs = set(bpy.data.objects) - old_objs
 
-        x_step = 1
-        for ob in imported_objs:
-            ob_x_scale = ob.scale.x
-            max_x = max_x + x_step + ob_x_scale
-            ob.location.x = max_x
+        # x_step = 1
+        # for ob in imported_objs:
+        #     ob_x_scale = ob.scale.x
+        #     max_x = max_x + x_step + ob_x_scale
+        #     ob.location.x = max_x
 
         end_time = time.time()
         utils.show_message_box("模型生成成功", "Ai model message", "INFO")
@@ -190,12 +209,14 @@ class VIEW3D_PT_aimodel_single(bpy.types.Panel):
     """
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'UI'
-    bl_category = '分享'
-    bl_label = 'AI 单图建模'
+    bl_category = 'AI建模'
+    bl_label = 'AI 单张草稿建模'
 
     PROPS = [
-        ('picture', bpy.props.StringProperty(name="上传", subtype='FILE_PATH', description="upload a picture")),
+        ('picture', bpy.props.StringProperty(name="图片", subtype='FILE_PATH', description="upload a picture")),
         ('category', bpy.props.EnumProperty(name='分类', description='单图建模支持的类型', items=categories, default='02691156')),
+        # ('aimodel_single_progress',
+        #  bpy.props.IntProperty(name='Progress', default=0, soft_max=100, soft_min=0, subtype="PERCENTAGE")),
     ]
 
     def draw(self, context):
@@ -212,11 +233,13 @@ class VIEW3D_PT_aimodel_multi(bpy.types.Panel):
     """
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'UI'
-    bl_category = '分享'
-    bl_label = 'AI 多图建模'
+    bl_category = 'AI建模'
+    bl_label = 'AI 多张照片建模'
 
     PROPS = [
         ('picture_dir', bpy.props.StringProperty(name="文件夹", subtype='FILE_PATH', description="upload a picture")),
+        ('multi_p_category',
+         bpy.props.EnumProperty(name='分类', description='单图建模支持的类型', items=multi_categories, default='02691156')),
     ]
 
     def draw(self, context):
