@@ -185,14 +185,14 @@ class OPR_OT_ai_model_generate_multi(async_loop.AsyncModalOperatorMixin, bpy.typ
             img_path = os.path.join(img_dir, img)
             img_name, img_suf = os.path.splitext(img)
             files["%s%s" % (i, img_suf)] = open(img_path, 'rb')
-        print("Start request")
+        print("Start request：",url)
         res, status = await self.request(url, files)
         if status != 200:
             self.report(
                 {'ERROR'},
                 "ai server error"
             )
-            # return {'CANCELLED'}
+            return {'CANCELLED'}
         else:
             # write response into an obj file
             user_data_dir = utils.get_user_data_dir()
@@ -254,7 +254,7 @@ class VIEW3D_PT_aimodel_multi(bpy.types.Panel):
     bl_label = 'AI 多张照片建模'
 
     PROPS = [
-        ('picture_dir', bpy.props.StringProperty(name="文件夹", subtype='FILE_PATH', description="upload a picture")),
+        ('picture_dir', bpy.props.StringProperty(name="文件夹", subtype='DIR_PATH', description="upload a picture")),
         ('multi_p_category',
          bpy.props.EnumProperty(name='分类', description='多图建模支持的类型', items=multi_categories, default='keyboard')),
     ]
