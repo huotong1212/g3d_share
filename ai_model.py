@@ -25,12 +25,23 @@ categories = {
 }
 
 multi_categories = {
-    ("02691156", "飞机", "Airplane"),
-    ("02958343", "汽车", "Car"),
-    ("03001627", "椅子", "Chair"),
-    ("03211117", "显示器", "Display"),
-    ("03636649", "台灯", "Lamp"),
-    ("04379243", "桌子", "Table"),
+    ("keyboard", "键盘", "Keyboard"),
+    ("staple", "订书机", "Staple"),
+    ("airplane", "飞机", "Airplane"),
+    ("bench", "长凳", "Bench"),
+    ("tri-stand", "三脚架", "tri-stand"),
+    ("car", "小汽车", "Car"),
+    ("kettle", "水壶", "Kettle"),
+    ("display", "显示器", "Display"),
+    ("lamp", "台灯", "Lamp"),
+    ("speaker", "扬声器", "Speaker"),
+    ("rifle", "来福枪", "Rifle"),
+    ("sofa", "沙发", "Sofa"),
+    ("table", "桌子", "Table"),
+    ("phone", "手机", "Phone"),
+    ("iphone", "iphone", "iPhone"),
+    ("boat", "船只", "Boat"),
+    ("chair", "椅子", "Chair"),
 }
 
 
@@ -108,7 +119,7 @@ class OPR_OT_ai_model_generate_single(async_loop.AsyncModalOperatorMixin, bpy.ty
             # utils.refresh_all_areas()
             self.report(
                 {'INFO'},
-                "导入模型..."
+                "生成成功，正在下载模型..."
             )
             bpy.ops.import_scene.obj(filepath=obj_path)
             # context.scene.aimodel_single_progress = 100
@@ -154,7 +165,7 @@ class OPR_OT_ai_model_generate_multi(async_loop.AsyncModalOperatorMixin, bpy.typ
             "模型生成中..."
         )
         start_time = time.time()
-        picture_path = context.scene.picture
+        picture_path = context.scene.picture_dir
         if not picture_path:
             utils.show_message_box("请先选择图片文件夹", "Ai model message", "INFO")
 
@@ -163,12 +174,18 @@ class OPR_OT_ai_model_generate_multi(async_loop.AsyncModalOperatorMixin, bpy.typ
                 "please upload a picture first"
             )
             return {'CANCELLED'}
-        url = f"http://192.168.1.26:80/api/generate/sketch/{context.scene.multi_p_category}"
-        filepath = context.scene.picture
-        files = {'file': open(filepath, 'rb')}
-        # await asyncio.sleep(10)
-        # TODO use aiohttp
-        # res = requests.post(url, files=files)
+        url = f"{settings.AI_MODEL_MULTI_SERVER}{context.scene.multi_p_category}"
+        img_dir = context.scene.picture_dir
+
+        files = os.listdir(img_dir)
+        imgs = [f for f in files if f.endswith(".jpg") or f.endswith(".png")]
+
+        files = {}
+        for i, img in enumerate(imgs):
+            img_path = os.path.join(img_dir, img)
+            img_name, img_suf = os.path.splitext(img)
+            files["%s%s" % (i, img_suf)] = open(img_path, 'rb')
+        print("Start request")
         res, status = await self.request(url, files)
         if status != 200:
             self.report(
@@ -179,9 +196,9 @@ class OPR_OT_ai_model_generate_multi(async_loop.AsyncModalOperatorMixin, bpy.typ
         else:
             # write response into an obj file
             user_data_dir = utils.get_user_data_dir()
-            name, suffix = os.path.splitext(os.path.basename(picture_path))
-            print("name", name)
-            obj_path = os.path.join(user_data_dir, "%.obj" % str(name))
+            # name, suffix = os.path.splitext(os.path.basename(picture_path))
+            # print("name:", name)
+            obj_path = os.path.join(user_data_dir, "ai_model.obj")
 
             with open(obj_path, mode='w') as f:
                 f.write(res)
@@ -239,7 +256,7 @@ class VIEW3D_PT_aimodel_multi(bpy.types.Panel):
     PROPS = [
         ('picture_dir', bpy.props.StringProperty(name="文件夹", subtype='FILE_PATH', description="upload a picture")),
         ('multi_p_category',
-         bpy.props.EnumProperty(name='分类', description='单图建模支持的类型', items=multi_categories, default='02691156')),
+         bpy.props.EnumProperty(name='分类', description='多图建模支持的类型', items=multi_categories, default='keyboard')),
     ]
 
     def draw(self, context):
