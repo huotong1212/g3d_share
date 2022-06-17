@@ -8,7 +8,15 @@ from . import async_loop
 from . import settings
 from . import utils
 
+ai_categories = {
+    ("01", "单图草稿生成", "Single Draft"),
+    ("02", "单张线稿生成", "Single Line Draft"),
+    ("03", "多张照片生成", "Multi Photo"),
+    ("04", "多张手绘生成", "Multi Line Draft"),
+}
+
 categories = {
+    ("02691155", "待上线", "Default"),
     ("02691156", "飞机", "Airplane"),
     ("02828884", "长凳", "Bench"),
     ("02933112", "内阁", "Cabinet"),
@@ -67,6 +75,9 @@ class OPR_OT_ai_model_generate_single(async_loop.AsyncModalOperatorMixin, bpy.ty
                 return await response.text(), response.status
 
     async def async_execute(self, context):
+
+        utils.show_message_box("功能待上线", "Ai model message", "INFO")
+        return {'CANCEL'}
         print("start ....")
         start_time = time.time()
         picture_path = context.scene.picture
@@ -227,11 +238,13 @@ class VIEW3D_PT_aimodel_single(bpy.types.Panel):
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'UI'
     bl_category = 'AI建模'
-    bl_label = 'AI 单张草稿建模'
+    bl_label = 'AI 建模'
 
     PROPS = [
         ('picture', bpy.props.StringProperty(name="图片", subtype='FILE_PATH', description="upload a picture")),
-        ('category', bpy.props.EnumProperty(name='分类', description='单图建模支持的类型', items=categories, default='02691156')),
+        ('ai_category',
+         bpy.props.EnumProperty(name='建模方式', description='支持的AI建模的方式', items=ai_categories, default='01')),
+        ('category', bpy.props.EnumProperty(name='分类', description='单图建模支持的类型', items=categories, default='02691155')),
         # ('aimodel_single_progress',
         #  bpy.props.IntProperty(name='Progress', default=0, soft_max=100, soft_min=0, subtype="PERCENTAGE")),
     ]
@@ -240,7 +253,11 @@ class VIEW3D_PT_aimodel_single(bpy.types.Panel):
         col = self.layout.column()
         for (prop_name, _) in self.PROPS:
             row = col.row()
+
+            if prop_name == 'category':
+                row.enabled = False
             row.prop(context.scene, prop_name)
+
         col.operator(OPR_OT_ai_model_generate_single.bl_idname, text="生成")
 
 
@@ -269,9 +286,9 @@ class VIEW3D_PT_aimodel_multi(bpy.types.Panel):
 
 CLASSES = [
     OPR_OT_ai_model_generate_single,
-    OPR_OT_ai_model_generate_multi,
+    # OPR_OT_ai_model_generate_multi,
     VIEW3D_PT_aimodel_single,
-    VIEW3D_PT_aimodel_multi,
+    # VIEW3D_PT_aimodel_multi,
 ]
 
 
