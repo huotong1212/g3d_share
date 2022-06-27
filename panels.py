@@ -1,7 +1,7 @@
 
 import bpy
 
-import addon_updater_ops
+from . import addon_updater_ops
 from . import model
 
 

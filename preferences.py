@@ -2,6 +2,7 @@ import bpy
 
 # Updater ops import, all setup in this file.
 # from . import addon_updater_ops, bl_info
+from . import addon_updater_ops
 
 
 class DemoUpdaterPanel(bpy.types.Panel):
