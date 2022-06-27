@@ -3,7 +3,7 @@ import time
 
 import aiohttp
 import bpy
-
+from . import addon_updater_ops
 from . import async_loop
 from . import settings
 from . import utils
@@ -250,6 +250,8 @@ class VIEW3D_PT_aimodel_single(bpy.types.Panel):
     ]
 
     def draw(self, context):
+        addon_updater_ops.check_for_update_background()
+
         col = self.layout.column()
         for (prop_name, _) in self.PROPS:
             row = col.row()
@@ -259,6 +261,8 @@ class VIEW3D_PT_aimodel_single(bpy.types.Panel):
             row.prop(context.scene, prop_name)
 
         col.operator(OPR_OT_ai_model_generate_single.bl_idname, text="生成")
+        addon_updater_ops.update_settings_ui(self, context)
+        addon_updater_ops.update_notice_box_ui(self, context)
 
 
 class VIEW3D_PT_aimodel_multi(bpy.types.Panel):

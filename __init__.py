@@ -39,18 +39,18 @@ def install_oss2():
     print("oss2 installed successfully")
 
 # Support reloading
-if "pillar" in locals():
-    import importlib
-
-    wheels = importlib.reload(wheels)
-    wheels.load_wheels()
-
-    pillar = importlib.reload(pillar)
-    cache = importlib.reload(cache)
-else:
-    from . import wheels
-
-    wheels.load_wheels()
+# if "pillar" in locals():
+#     import importlib
+#
+#     wheels = importlib.reload(wheels)
+#     wheels.load_wheels()
+#
+#     pillar = importlib.reload(pillar)
+#     cache = importlib.reload(cache)
+# else:
+#     from . import wheels
+#
+#     wheels.load_wheels()
 
 log = logging.getLogger(__name__)
 

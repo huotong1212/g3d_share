@@ -106,7 +106,7 @@ class DemoPreferences(bpy.types.AddonPreferences):
 
 classes = (
     DemoPreferences,
-    DemoUpdaterPanel
+    # DemoUpdaterPanel
 )
 
 

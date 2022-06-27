@@ -963,7 +963,7 @@ def update_settings_ui(self, context, element=None):
         return
 
     # auto-update settings
-    box.label(text="Updater Settings")
+    box.label(text="一键更新")
     row = box.row()
 
     # special case to tell user to restart blender, if set that way
@@ -976,21 +976,21 @@ def update_settings_ui(self, context, element=None):
                          icon="ERROR")
             return
 
-    split = layout_split(row, factor=0.4)
+    split = layout_split(row, factor=1)
     sub_col = split.column()
     sub_col.prop(settings, "auto_check_update")
-    sub_col = split.column()
+    # sub_col = split.column()
 
-    if not settings.auto_check_update:
-        sub_col.enabled = False
-    sub_row = sub_col.row()
-    sub_row.label(text="Interval between checks")
-    sub_row = sub_col.row(align=True)
-    check_col = sub_row.column(align=True)
-    check_col.prop(settings, "updater_interval_months")
-    check_col = sub_row.column(align=True)
-    check_col.prop(settings, "updater_interval_days")
-    check_col = sub_row.column(align=True)
+    # if not settings.auto_check_update:
+    #     sub_col.enabled = False
+    # sub_row = sub_col.row()
+    # sub_row.label(text="Interval between checks")
+    # sub_row = sub_col.row(align=True)
+    # check_col = sub_row.column(align=True)
+    # check_col.prop(settings, "updater_interval_months")
+    # check_col = sub_row.column(align=True)
+    # check_col.prop(settings, "updater_interval_days")
+    # check_col = sub_row.column(align=True)
 
     # Consider un-commenting for local dev (e.g. to set shorter intervals)
     # check_col.prop(settings,"updater_interval_hours")
@@ -1078,24 +1078,24 @@ def update_settings_ui(self, context, element=None):
         split.operator(AddonUpdaterCheckNow.bl_idname,
                        text="", icon="FILE_REFRESH")
 
-    if not updater.manual_only:
-        col = row.column(align=True)
-        if updater.include_branches and len(updater.include_branch_list) > 0:
-            branch = updater.include_branch_list[0]
-            col.operator(AddonUpdaterUpdateTarget.bl_idname,
-                         text="Install {} / old version".format(branch))
-        else:
-            col.operator(AddonUpdaterUpdateTarget.bl_idname,
-                         text="(Re)install addon version")
-        last_date = "none found"
-        backup_path = os.path.join(updater.stage_path, "backup")
-        if "backup_date" in updater.json and os.path.isdir(backup_path):
-            if updater.json["backup_date"] == "":
-                last_date = "Date not found"
-            else:
-                last_date = updater.json["backup_date"]
-        backup_text = "Restore addon backup ({})".format(last_date)
-        col.operator(AddonUpdaterRestoreBackup.bl_idname, text=backup_text)
+    # if not updater.manual_only:
+    #     col = row.column(align=True)
+    #     if updater.include_branches and len(updater.include_branch_list) > 0:
+    #         branch = updater.include_branch_list[0]
+    #         col.operator(AddonUpdaterUpdateTarget.bl_idname,
+    #                      text="Install {} / old version".format(branch))
+    #     else:
+    #         col.operator(AddonUpdaterUpdateTarget.bl_idname,
+    #                      text="(Re)install addon version")
+    #     last_date = "none found"
+    #     backup_path = os.path.join(updater.stage_path, "backup")
+    #     if "backup_date" in updater.json and os.path.isdir(backup_path):
+    #         if updater.json["backup_date"] == "":
+    #             last_date = "Date not found"
+    #         else:
+    #             last_date = updater.json["backup_date"]
+    #     backup_text = "Restore addon backup ({})".format(last_date)
+    #     col.operator(AddonUpdaterRestoreBackup.bl_idname, text=backup_text)
 
     row = box.row()
     row.scale_y = 0.7
