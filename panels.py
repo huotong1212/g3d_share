@@ -1,6 +1,7 @@
 
 import bpy
 
+import addon_updater_ops
 from . import model
 
 
@@ -30,6 +31,7 @@ class VIEW3D_PT_object_upload(bpy.types.Panel):
     ]
 
     def draw(self, context):
+        addon_updater_ops.check_for_update_background()
         col = self.layout.column()
         for (prop_name, _) in self.PROPS:
             row = col.row()
@@ -41,7 +43,7 @@ class VIEW3D_PT_object_upload(bpy.types.Panel):
                 row.operator(OPR_OT_copy_url.bl_idname, text="", icon='COPY_ID')
 
         col.operator(model.OPR_OT_upload_model.bl_idname, text='Upload')
-
+        addon_updater_ops.update_notice_box_ui(self, context)
 
 CLASSES = [
     OPR_OT_copy_url,

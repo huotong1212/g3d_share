@@ -22,7 +22,7 @@ bl_info = {
     "name": "G3dShare",
     "author": "",
     "description": "",
-    "blender": (2, 80, 0),
+    "blender": (3, 1, 0),
     "version": (0, 0, 1),
     "location": "",
     "warning": "",
@@ -30,6 +30,8 @@ bl_info = {
 }
 import logging
 import os
+from . import addon_updater_ops
+
 def install_oss2():
     print('Run child process  (%s)...' % (os.getpid()))
     import pip
@@ -54,6 +56,9 @@ log = logging.getLogger(__name__)
 
 
 def register():
+    addon_updater_ops.register(bl_info)
+
+
     """Late-loads and registers the Blender-dependent submodules."""
     try:
         import oss2
@@ -93,6 +98,7 @@ def register():
         appdir = reload_mod("appdir")
         panels = reload_mod("panels")
         ai_model = reload_mod("ai_model")
+        preferences = reload_mod("preferences")
 
     else:
         from . import (
@@ -101,6 +107,7 @@ def register():
             auth,
             panels,
             ai_model,
+            preferences,
         )
 
     async_loop.setup_asyncio_executor()
@@ -109,6 +116,9 @@ def register():
     auth.register()
     panels.register()
     ai_model.register()
+    preferences.register()
+
+
 
 
 
@@ -137,6 +147,7 @@ def unregister():
         auth,
         panels,
         ai_model,
+        preferences,
     )
 
     async_loop.unregister()
@@ -144,6 +155,7 @@ def unregister():
     auth.unregister()
     panels.unregister()
     ai_model.unregister()
+    preferences.unregister()
 
     # import pip
     # pip.main(['uninstall', 'oss2'])
