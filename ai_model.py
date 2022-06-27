@@ -262,7 +262,7 @@ class VIEW3D_PT_aimodel_single(bpy.types.Panel):
 
         col.operator(OPR_OT_ai_model_generate_single.bl_idname, text="生成")
         addon_updater_ops.update_settings_ui(self, context)
-        addon_updater_ops.update_notice_box_ui(self, context)
+        # addon_updater_ops.update_notice_box_ui(self, context)
 
 
 class VIEW3D_PT_aimodel_multi(bpy.types.Panel):
