@@ -151,7 +151,7 @@ class AddonUpdaterInstallPopup(bpy.types.Operator):
         items=[
             ("install", "Update Now", "Install update now"),
             ("ignore", "Ignore", "Ignore this update to prevent future popups"),
-            ("defer", "Defer", "Defer choice till next blender session")
+            ("defer", "Defer", "Defer choice till next G3D session")
         ],
         options={'HIDDEN'}
     )
