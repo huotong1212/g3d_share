@@ -33,6 +33,7 @@ categories = {
 }
 
 multi_categories = {
+    ("locked", "待上线", "locked"),
     ("keyboard", "键盘", "Keyboard"),
     ("staple", "订书机", "Staple"),
     ("airplane", "飞机", "Airplane"),
@@ -132,7 +133,8 @@ class OPR_OT_ai_model_generate_single(async_loop.AsyncModalOperatorMixin, bpy.ty
                 {'INFO'},
                 "生成成功，正在下载模型..."
             )
-            bpy.ops.import_scene.obj(filepath=obj_path)
+            # bpy.ops.import_scene.obj(filepath=obj_path)
+            bpy.ops.import_mesh.ply(filepath=obj_path)
             # context.scene.aimodel_single_progress = 100
             # utils.refresh_all_areas()
             # bpy.ops.import_scene.obj(filepath="D:\\glacierProjects\\blender_demos\\objs\\tem.obj")
@@ -185,7 +187,8 @@ class OPR_OT_ai_model_generate_multi(async_loop.AsyncModalOperatorMixin, bpy.typ
                 "please upload a picture first"
             )
             return {'CANCELLED'}
-        url = f"{settings.AI_MODEL_MULTI_SERVER}{context.scene.multi_p_category}"
+        # url = f"{settings.AI_MODEL_MULTI_SERVER}{context.scene.multi_p_category}"
+        url = f"{settings.AI_MODEL_MULTI_SERVER}"
         img_dir = context.scene.picture_dir
 
         files = os.listdir(img_dir)
@@ -209,14 +212,16 @@ class OPR_OT_ai_model_generate_multi(async_loop.AsyncModalOperatorMixin, bpy.typ
             user_data_dir = utils.get_user_data_dir()
             # name, suffix = os.path.splitext(os.path.basename(picture_path))
             # print("name:", name)
-            obj_path = os.path.join(user_data_dir, "ai_model.obj")
+            obj_path = os.path.join(user_data_dir, "ai_model.ply")
 
             with open(obj_path, mode='w') as f:
                 f.write(res)
 
             # old_objs = set(bpy.data.objects)
             # max_x = max([(ob.location.x + ob.scale.x) for ob in old_objs])
-            bpy.ops.import_scene.obj(filepath=obj_path)
+            # bpy.ops.import_scene.obj(filepath=obj_path)
+            bpy.ops.import_mesh.ply(filepath=obj_path)
+
         # imported_objs = set(bpy.data.objects) - old_objs
 
         # x_step = 1
@@ -243,7 +248,7 @@ class VIEW3D_PT_aimodel_single(bpy.types.Panel):
     PROPS = [
         ('picture', bpy.props.StringProperty(name="图片", subtype='FILE_PATH', description="upload a picture")),
         ('ai_category',
-         bpy.props.EnumProperty(name='建模方式', description='支持的AI建模的方式', items=ai_categories, default='01')),
+         bpy.props.EnumProperty(name='建模方式', description='支持的AI建模的方式', items=ai_categories, default='03')),
         ('category', bpy.props.EnumProperty(name='分类', description='单图建模支持的类型', items=categories, default='02691155')),
         # ('aimodel_single_progress',
         #  bpy.props.IntProperty(name='Progress', default=0, soft_max=100, soft_min=0, subtype="PERCENTAGE")),
@@ -276,23 +281,32 @@ class VIEW3D_PT_aimodel_multi(bpy.types.Panel):
 
     PROPS = [
         ('picture_dir', bpy.props.StringProperty(name="文件夹", subtype='DIR_PATH', description="upload a picture")),
+        ('ai_category',
+         bpy.props.EnumProperty(name='建模方式', description='支持的AI建模的方式', items=ai_categories, default='03')),
         ('multi_p_category',
-         bpy.props.EnumProperty(name='分类', description='多图建模支持的类型', items=multi_categories, default='keyboard')),
+         bpy.props.EnumProperty(name='分类', description='多图建模支持的类型', items=multi_categories, default='chair')),
     ]
 
     def draw(self, context):
+        addon_updater_ops.check_for_update_background()
+
         col = self.layout.column()
         for (prop_name, _) in self.PROPS:
             row = col.row()
+
+            if prop_name in ('multi_p_category','ai_category'):
+                row.enabled = False
+
             row.prop(context.scene, prop_name)
         col.operator(OPR_OT_ai_model_generate_multi.bl_idname, text="生成")
+        addon_updater_ops.update_settings_ui(self, context)
 
 
 CLASSES = [
-    OPR_OT_ai_model_generate_single,
-    # OPR_OT_ai_model_generate_multi,
-    VIEW3D_PT_aimodel_single,
-    # VIEW3D_PT_aimodel_multi,
+    # OPR_OT_ai_model_generate_single,
+    OPR_OT_ai_model_generate_multi,
+    # VIEW3D_PT_aimodel_single,
+    VIEW3D_PT_aimodel_multi,
 ]
 
 
