@@ -522,7 +522,7 @@ class AddonUpdaterUpdatedSuccessful(bpy.types.Operator):
                 alert_row.alert = True
                 alert_row.operator(
                     "wm.quit_blender",
-                    text="Restart blender to reload",
+                    text="Restart G3D to reload",
                     icon="BLANK1")
                 updater.json_reset_restore()
             else:
@@ -533,7 +533,7 @@ class AddonUpdaterUpdatedSuccessful(bpy.types.Operator):
                 alert_row.alert = True
                 alert_row.operator(
                     "wm.quit_blender",
-                    text="Restart blender to reload",
+                    text="Restart G3D to reload",
                     icon="BLANK1")
 
         else:
@@ -543,7 +543,7 @@ class AddonUpdaterUpdatedSuccessful(bpy.types.Operator):
                 col.scale_y = 0.7
                 col.label(text="Addon restored", icon="RECOVER_LAST")
                 col.label(
-                    text="Consider restarting blender to fully reload.",
+                    text="Consider restarting G3D to fully reload.",
                     icon="BLANK1")
                 updater.json_reset_restore()
             else:
@@ -552,7 +552,7 @@ class AddonUpdaterUpdatedSuccessful(bpy.types.Operator):
                 col.label(
                     text="Addon successfully installed", icon="FILE_TICK")
                 col.label(
-                    text="Consider restarting blender to fully reload.",
+                    text="Consider restarting G3D to fully reload.",
                     icon="BLANK1")
 
     def execute(self, context):
@@ -972,7 +972,7 @@ def update_settings_ui(self, context, element=None):
         if "just_updated" in saved_state and saved_state["just_updated"]:
             row.alert = True
             row.operator("wm.quit_blender",
-                         text="Restart blender to complete update",
+                         text="Restart G3D to complete update",
                          icon="ERROR")
             return
 
@@ -1137,7 +1137,7 @@ def update_settings_ui_condensed(self, context, element=None):
             row.alert = True  # mark red
             row.operator(
                 "wm.quit_blender",
-                text="Restart blender to complete update",
+                text="Restart G3D to complete update",
                 icon="ERROR")
             return
 

@@ -1112,7 +1112,7 @@ class SingletonUpdater:
         # if post_update false, skip this function
         # else, unload/reload addon & trigger popup
         if not self._auto_reload_post_update:
-            print("Restart blender to reload addon and complete update")
+            print("Restart G3D to reload addon and complete update")
             return
 
         self.print_verbose("Reloading addon...")
