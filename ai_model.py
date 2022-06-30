@@ -1,8 +1,10 @@
+import json
 import os
 import time
 
 import aiohttp
 import bpy
+
 from . import addon_updater_ops
 from . import async_loop
 from . import settings
@@ -199,12 +201,15 @@ class OPR_OT_ai_model_generate_multi(async_loop.AsyncModalOperatorMixin, bpy.typ
             img_path = os.path.join(img_dir, img)
             img_name, img_suf = os.path.splitext(img)
             files["%s%s" % (i, img_suf)] = open(img_path, 'rb')
-        print("Start request：",url)
+        print("Start request：", url)
         res, status = await self.request(url, files)
+        print("res:", res)
+
         if status != 200:
+            res = json.loads(res)
             self.report(
                 {'ERROR'},
-                "ai server error"
+                str(res.get("message", "ai server error"))
             )
             return {'CANCELLED'}
         else:
@@ -294,7 +299,7 @@ class VIEW3D_PT_aimodel_multi(bpy.types.Panel):
         for (prop_name, _) in self.PROPS:
             row = col.row()
 
-            if prop_name in ('multi_p_category','ai_category'):
+            if prop_name in ('multi_p_category', 'ai_category'):
                 row.enabled = False
 
             row.prop(context.scene, prop_name)
