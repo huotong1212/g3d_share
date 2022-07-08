@@ -1,1 +1,1 @@
-## G3D blender python 插件
+## G3D  python 插件
