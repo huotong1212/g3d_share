@@ -23,7 +23,7 @@ bl_info = {
     "author": "",
     "description": "",
     "blender": (3, 1, 0),
-    "version": (0, 0, 8),
+    "version": (0, 0, 9),
     "location": "",
     "warning": "",
     "category": "Generic"
@@ -57,7 +57,6 @@ log = logging.getLogger(__name__)
 
 def register():
     addon_updater_ops.register(bl_info)
-
 
     """Late-loads and registers the Blender-dependent submodules."""
     try:

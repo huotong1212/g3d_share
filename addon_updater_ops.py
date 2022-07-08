@@ -1341,7 +1341,8 @@ def register(bl_info):
     updater.clear_state()  # Clear internal vars, avoids reloading oddities.
 
     # Confirm your updater "engine" (Github is default if not specified).
-    updater.engine = "Github"
+    # updater.engine = "Github"
+    updater.engine = "Gitee"
     # updater.engine = "GitLab"
     # updater.engine = "Bitbucket"
 
@@ -1353,7 +1354,8 @@ def register(bl_info):
     updater.private_token = None  # "tokenstring"
 
     # Choose your own username, must match website (not needed for GitLab).
-    updater.user = "huotong1212"
+    # updater.user = "huotong1212"
+    updater.user = "lukedunphy"
 
     # Choose your own repository, must match git name for GitHUb and Bitbucket,
     # for GitLab use project ID (numbers only).

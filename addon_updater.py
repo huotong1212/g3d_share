@@ -25,22 +25,23 @@ https://github.com/CGCookie/blender-addon-updater
 __version__ = "1.1.0"
 
 import errno
-import traceback
-import platform
-import ssl
-import urllib.request
-import urllib
-import os
-import json
-import zipfile
-import shutil
-import threading
 import fnmatch
+import json
+import os
+import platform
+import shutil
+import ssl
+import threading
+import traceback
+import urllib
+import urllib.request
+import zipfile
 from datetime import datetime, timedelta
 
+import addon_utils
 # Blender imports, used in limited cases.
 import bpy
-import addon_utils
+
 
 # -----------------------------------------------------------------------------
 # The main class
@@ -242,6 +243,8 @@ class SingletonUpdater:
             self._engine = GitlabEngine()
         elif engine == "bitbucket":
             self._engine = BitbucketEngine()
+        elif engine == "gitee":
+            self._engine = GiteeEngine()
         else:
             raise ValueError("Invalid engine selection")
 
@@ -1735,6 +1738,35 @@ class GitlabEngine:
                 "zipball_url": self.get_zip_url(tag["commit"]["id"], updater)
             } for tag in response]
 
+
+class GiteeEngine:
+    """Integration to Github API"""
+
+    def __init__(self):
+        self.api_url = 'https://api.gitee.com'
+        self.token = None
+        self.name = "gitee"
+
+    def form_repo_url(self, updater):
+        return "{}/repos/{}/{}".format(
+            self.api_url, updater.user, updater.repo)
+
+    def form_tags_url(self, updater):
+        if updater.use_releases:
+            return "{}/releases".format(self.form_repo_url(updater))
+        else:
+            return "{}/tags".format(self.form_repo_url(updater))
+
+    def form_branch_list_url(self, updater):
+        return "{}/branches".format(self.form_repo_url(updater))
+
+    def form_branch_url(self, branch, updater):
+        return "{}/zipball/{}".format(self.form_repo_url(updater), branch)
+
+    def parse_tags(self, response, updater):
+        if response is None:
+            return list()
+        return response
 
 # -----------------------------------------------------------------------------
 # The module-shared class instance,

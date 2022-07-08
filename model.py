@@ -103,9 +103,9 @@ class OPR_OT_upload_model(async_loop.AsyncModalOperatorMixin, bpy.types.Operator
         :return:
         """
         user_data_dir = utils.get_user_data_dir()
-        obj_path = os.path.join(user_data_dir, "temp.obj")
+        obj_path = os.path.join(user_data_dir, "temp.fbx")
 
-        bpy.ops.export_scene.obj(filepath=obj_path)
+        bpy.ops.export_scene.fbx(filepath=obj_path)
 
         return obj_path
 
