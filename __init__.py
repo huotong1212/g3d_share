@@ -23,7 +23,7 @@ bl_info = {
     "author": "",
     "description": "",
     "blender": (3, 1, 0),
-    "version": (0, 0, 9),
+    "version": (0, 0, 10),
     "location": "",
     "warning": "",
     "category": "Generic"
