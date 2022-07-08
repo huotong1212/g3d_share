@@ -74,7 +74,7 @@ class OPR_OT_upload_model(async_loop.AsyncModalOperatorMixin, bpy.types.Operator
         total_size = file_meta.st_size
         # 4.创建记录
         data = {
-            "filename": "%s.obj" % file_name,
+            "filename": "%s.fbx" % file_name,
             "md5": md5,
             "size": total_size,
         }
